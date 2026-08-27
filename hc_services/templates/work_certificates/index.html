@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Surat Keterangan Kerja</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='work_certificates/styles.css') }}">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Lewati ke konten utama</a>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">Human Capital Services</p>
+      <h1>Surat Keterangan Kerja</h1>
+    </div>
+    <form class="identity-panel" id="identity-form" aria-label="Konteks pengguna">
+      <label>
+        Peran
+        <select id="identity-role" name="role">
+          <option value="employee">Pegawai</option>
+          <option value="verifier">Verifikator HC</option>
+          <option value="approver">Approver</option>
+          <option value="admin_hc">Admin HC</option>
+          <option value="auditor">Auditor</option>
+        </select>
+      </label>
+      <label>
+        User ID
+        <input id="identity-user-id" name="user_id" value="employee-user-1" autocomplete="off">
+      </label>
+      <label>
+        Employee ID
+        <input id="identity-employee-id" name="employee_id" autocomplete="off">
+      </label>
+      <button type="submit">Terapkan</button>
+    </form>
+  </header>
+
+  <main id="main-content" class="workspace">
+    <section class="toolbar" aria-label="Navigasi modul">
+      <button class="tab-button is-active" type="button" data-view="request-form">Pengajuan</button>
+      <button class="tab-button" type="button" data-view="tracking-view">Tracking</button>
+      <button class="tab-button" type="button" data-view="queue-view">Antrean</button>
+      <button class="tab-button" type="button" data-view="admin-view">Admin</button>
+    </section>
+
+    <div class="alert" id="app-alert" role="status" aria-live="polite" hidden></div>
+
+    <section class="view-panel is-active" id="request-form" aria-labelledby="request-form-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Pegawai</p>
+          <h2 id="request-form-title">Buat permohonan</h2>
+        </div>
+        <button type="button" id="refresh-templates">Muat template</button>
+      </div>
+
+      <form class="form-grid" id="create-request-form" novalidate>
+        <label>
+          Template
+          <select id="template-id" name="template_id" required></select>
+          <span class="field-error" data-field-error="template_id"></span>
+        </label>
+        <label>
+          Bahasa
+          <input id="request-language" name="language" value="id" maxlength="16" required>
+          <span class="field-error" data-field-error="language"></span>
+        </label>
+        <label class="wide">
+          Tujuan penggunaan
+          <textarea id="request-purpose" name="purpose" rows="4" maxlength="1000" required></textarea>
+          <span class="field-error" data-field-error="purpose"></span>
+        </label>
+        <label>
+          Penerima
+          <input id="additional-recipient" name="recipient" maxlength="255">
+          <span class="field-error" data-field-error="additional_fields.recipient"></span>
+        </label>
+        <label class="wide">
+          Catatan pemohon
+          <textarea id="employee-note" name="employee_note" rows="3" maxlength="2000"></textarea>
+          <span class="field-error" data-field-error="employee_note"></span>
+        </label>
+        <div class="form-actions wide">
+          <button type="submit">Simpan draft</button>
+          <button type="button" id="submit-created-request" disabled>Kirim draft</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="view-panel" id="tracking-view" aria-labelledby="tracking-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Riwayat</p>
+          <h2 id="tracking-title">Tracking permohonan</h2>
+        </div>
+        <button type="button" id="refresh-requests">Refresh</button>
+      </div>
+      <div class="split-layout">
+        <section aria-label="Daftar permohonan">
+          <div id="request-list" class="list-stack" aria-live="polite"></div>
+        </section>
+        <section class="detail-panel" aria-label="Detail permohonan">
+          <div id="request-detail" class="empty-state">Belum ada permohonan dipilih.</div>
+        </section>
+      </div>
+    </section>
+
+    <section class="view-panel" id="queue-view" aria-labelledby="queue-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Workflow</p>
+          <h2 id="queue-title">Antrean tindakan</h2>
+        </div>
+        <button type="button" id="refresh-queue">Refresh antrean</button>
+      </div>
+      <div id="queue-list" class="list-stack" aria-live="polite"></div>
+    </section>
+
+    <section class="view-panel" id="admin-view" aria-labelledby="admin-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Admin HC</p>
+          <h2 id="admin-title">Setup master data</h2>
+        </div>
+      </div>
+      <div class="admin-grid">
+        <form id="employee-form" class="stack-form" novalidate>
+          <h3>Data pegawai</h3>
+          <label>Nomor induk <input name="employee_number" required></label>
+          <label>Nama lengkap <input name="full_name" required></label>
+          <label>Email kerja <input name="work_email" type="email"></label>
+          <label>Unit <input name="unit" required></label>
+          <label>Jabatan <input name="position_title" required></label>
+          <label>Lokasi kerja <input name="work_location" required></label>
+          <label>Tipe hubungan kerja <input name="employment_type" required></label>
+          <label>Tanggal mulai <input name="start_date" type="date" required></label>
+          <label>Nama atasan <input name="supervisor_name"></label>
+          <button type="submit">Simpan pegawai</button>
+        </form>
+
+        <form id="template-form" class="stack-form" novalidate>
+          <h3>Template surat</h3>
+          <label>Kode <input name="code" required></label>
+          <label>Nama template <input name="name" required></label>
+          <label>Bahasa <input name="language" value="id" required></label>
+          <label class="checkbox-row"><input name="is_active" type="checkbox" checked> Aktif</label>
+          <label>Isi template <textarea name="body_template" rows="6" required>{% raw %}Nama: {{ employee.full_name }}{% endraw %}</textarea></label>
+          <label>Field wajib tambahan <input name="required_additional_fields" value="recipient"></label>
+          <button type="submit">Simpan template</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='work_certificates/app.js') }}" defer></script>
+</body>
+</html>
